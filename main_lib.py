@@ -2,9 +2,6 @@ import json
 import random
 from paho.mqtt import client as mqtt_client
 
-with open('settings.json', 'r') as json_file:
-    settings = json.loads(json_file.read())
-
 
 def write_json(store_path, data):
     with open(store_path, 'w') as jsonFile:
@@ -19,10 +16,11 @@ def read_json(store_path):
 
 class MqttPublish:
     def __init__(self):
-        self.broker = settings['mqtt']['broker']
-        self.port = int(settings['mqtt']['port'])
-        self.username = settings['mqtt']['user']
-        self.password = settings['mqtt']['password']
+        self.settings = read_json('./settings.json')
+        self.broker = self.settings['mqtt']['broker']
+        self.port = int(self.settings['mqtt']['port'])
+        self.username = self.settings['mqtt']['user']
+        self.password = self.settings['mqtt']['pass']
         self.client_id = f'python-mqtt-{random.randint(0, 1000)}'
 
     def connect_mqtt(self):
@@ -33,7 +31,7 @@ class MqttPublish:
                 print("Failed to connect, return code %d\n", rc)
 
         client = mqtt_client.Client(self.client_id)
-        # client.username_pw_set(username, password)
+        # client.username_pw_set(self.username, self.password)
         client.on_connect = on_connect
         client.connect(self.broker, self.port)
         return client
