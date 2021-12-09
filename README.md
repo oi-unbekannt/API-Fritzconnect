@@ -3,3 +3,4 @@
 
 ## Todo
  * Complete Rework
+ * Add API Authentication
